@@ -19,11 +19,11 @@ fpr6=[]
 tpr6=[]
 fpr7=[]
 tpr7=[]
-with open ("5Validation.txt", "r") as f:
+with open ("ou.txt", "r") as f:
     reader = csv.reader(f, delimiter = "\t")
     for i in reader:
-      tpr1.append((float(i[0])))
-      fpr1.append((1.0-float(i[1])))
+      tpr1.append((float(i[3])))
+      fpr1.append((1.0-float(i[4])))
 auc1 = metrics.auc(fpr1, tpr1)
 plt.plot(fpr1,tpr1,label= 'class0 = %0.2f' % auc1,color='blue',linewidth=2)
 plt.plot([0,1],[0,1],'r--',label='random')

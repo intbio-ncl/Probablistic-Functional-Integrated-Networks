@@ -9,22 +9,21 @@ values = []
 numbers = []
 attributes=[]
 evidences=[]
-with open ("CuratedDataStats.txt", "r") as f:
+with open ("SharedGeneswithnflationValues.txt", "r") as f:
     reader = csv.reader(f, delimiter = "\t")
     
     for i in reader:
      names.append(i[0])
      values.append(int(i[1]))
-     numbers.append(int(i[2]))
-     attributes.append(int(i[3]))
-     evidences.append(int(i[4]))
+     numbers.append(float(i[2]))
+     
 
 
 
 
-df = pd.DataFrame({'Genes': values,
-                   "Diseases": numbers, "Associations":attributes, "Evidences":evidences}, index=names)
-df.plot.barh(log = True)
+df = pd.DataFrame({'Number of clusters': values,
+                   "Average of shared genes": numbers}, index=names)
+df.plot.bar(log = True)
 plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
           fancybox=True, shadow=True, ncol=5)
 plt.show()

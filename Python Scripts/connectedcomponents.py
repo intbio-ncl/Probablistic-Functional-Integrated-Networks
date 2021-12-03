@@ -12,13 +12,13 @@ from networkx.algorithms import bipartite
 EdgeList=[]
 Source=[]
 target=[]
-with open('integrated.txt','r') as f:
+with open('Predicted new association.txt','r') as f:
     row = f.readlines()
     for line in row:
         triplets = line.split("\t")
         Source.append(triplets[0])
         target.append(triplets[1])
-        Tupe=(triplets[0], triplets[1], triplets[2])
+        Tupe=(triplets[0], triplets[1], 1)
         EdgeList.append(Tupe)
 f.close()
 print(len(EdgeList))
@@ -38,8 +38,8 @@ print(G.number_of_nodes())
 print(len(list(nx.connected_components(G))))
 print(len(max(list(nx.connected_components(G)))))
 for component in sorted(nx.connected_components(G), key=len, reverse=True):
-    #print(len(component))
-    if len(component)==12102:
+    print(len(component))
+    if len(component)==310:
         G3 = G.subgraph(component)
         print(G3.number_of_nodes())
         print(G3.number_of_edges())
@@ -63,7 +63,4 @@ print(len(largest_component))
 G2 = G.subgraph(largest_component)
 print(G2.number_of_nodes())
 print(G2.number_of_edges())
-import community 
-partition = community.best_partition(G3, weight='weight')
-nx.draw(G2)
-plt.show()
+
