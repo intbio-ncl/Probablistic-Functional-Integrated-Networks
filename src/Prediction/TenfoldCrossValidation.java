@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import pfinnetwork.Pair;
+import pfinnetwork.*;
 
 /**
  *
@@ -21,21 +21,21 @@ import pfinnetwork.Pair;
  */
 public class TenfoldCrossValidation {
     public void crossvalidation(Map<Pair,Double>Network)throws IOException{
-    
-           /*for(Pair P1 : IntegratedS.keySet()){
-               if(IntegratedS.get(P1)<15){
-                  Network.remove(P1);
+          Map<Pair,Double>Purnnetwork=new HashMap<Pair,Double>();
+          for(Pair P1 : Network.keySet()){
+               if(Network.get(P1)>15){
+                  Purnnetwork.put(P1,Network.get(P1));
                }
            
-           }*/
-              System.out.print("Size Network after removing"+"\t"+Network.size()+"\n");
+           }
+              System.out.print("Size Network after removing"+"\t"+Purnnetwork.size()+"\n");
          
         List<Pair>network=new ArrayList<Pair>();
          List<Map>networks=new ArrayList<Map>();
          Set<Double>d=new HashSet<Double>();
          Set<Double>d1=new HashSet<Double>();
 
-          for(Pair link:Network.keySet()){
+          for(Pair link:Purnnetwork.keySet()){
               network.add(link);
          
          }
@@ -44,7 +44,7 @@ public class TenfoldCrossValidation {
              
                
           Map<Pair,Double>subnetwork=new HashMap<Pair,Double>();
-            while(subnetwork.size()<2454) {
+            while(subnetwork.size()<1470) {
                             
                 Random random = new Random();
                 int randomNumber = random.nextInt(network.size());
@@ -56,7 +56,7 @@ public class TenfoldCrossValidation {
             }
              networks.add(subnetwork);
          }
-           for(int s=0;s<1;s++){
+          for(int s=0;s<7;s++){
                networks.get(0).put(network.get(s), Network.get(network.get(s)));
            }
          /*Map<Pair,Double>Train=new HashMap<Pair,Double>(); 
@@ -76,25 +76,81 @@ public class TenfoldCrossValidation {
                         Train.putAll(newList.get(s));
                         
                         }
-                       // System.out.print(Test);
+                       System.out.print("test set"+Test.size()+"\n");
+                       System.out.print("test set"+Train.size()+"\n");
          NetworkPrediction NP = new NetworkPrediction();
-        
-       Map<String,Set<Pair>>GeneNeighbour=NP.GNeighbours(Train);
        
+       Map<String,Set<Triple>>GeneNeighbour=NP.GNeighbours(Train);
+       // System.out.print("geneNeighbour"+"\t"+GeneNeighbour+"\n");
         Map<String,Set<String>>DNeighbour=NP.DNeighbours(Train);
-       
+       System.out.print(Train.size()+"\n");
         Map<Pair,Set<String>>Common=NP.CommonNeighbours(Train,DNeighbour, GeneNeighbour);
-        System.out.print(Common.size());
-       Map<Pair,Double>Predicatedassociation=NP.Predict(Train,GeneNeighbour,DNeighbour,Common);
-         NP.writetoFilePrediction(Predicatedassociation);
-   
-         Validation vd = new Validation();
-         Set<List>AUC=vd.NetworkValidat(Test,j);
+        System.out.print("Common Pair"+Common.size()+"\n");
+        System.out.print(Train.size());
+        Map<Pair,Double>Predicatedassociation=NP.Predict(Train,GeneNeighbour,DNeighbour,Common);
+        NP.writetoFilePrediction(Predicatedassociation);
+        
+        Validation vd = new Validation();
+        List<Double>AUC=vd.NetworkValidat(Test,j);
+        
         
          }
+    
          
            
         
                           
 }
+     public void crossvalidationLOO(Map<Pair,Double>Network)throws IOException{
+          Map<Pair,Double>Purnnetwork=new HashMap<Pair,Double>();
+           for(Pair P1 : Network.keySet()){
+               if(Network.get(P1)>10){
+                  Purnnetwork.put(P1,Network.get(P1));
+               }
+           
+           }
+              System.out.print("Size Network after removing"+"\t"+Purnnetwork.size()+"\n");
+         
+        List<Pair>network=new ArrayList<Pair>();
+         
+          for(Pair link:Purnnetwork.keySet()){
+              network.add(link);
+         
+         }
+         System.out.print("size list"+"\t"+network.size()+"\n");
+         for( int i =0; i<network.size();i++){
+             Map<Pair,Double>train=new HashMap<Pair,Double>();
+             train.putAll(Purnnetwork);
+             Map<Pair,Double>test=new HashMap<Pair,Double>();
+                Random random = new Random();
+                int randomNumber = random.nextInt(network.size());
+                test.put(network.get(randomNumber),Network.get(network.get(randomNumber)));
+                //System.out.print(network.get(randomNumber)+"\t"+Network.get(network.get(randomNumber))+"\n"+"\n");
+                
+                network.remove(network.get(randomNumber));
+                train.remove(network.get(randomNumber));
+                NetworkPrediction NP = new NetworkPrediction();
+        
+                Map<String,Set<Triple>>GeneNeighbour=NP.GNeighbours(train);
+               
+                Map<String,Set<String>>DNeighbour=NP.DNeighbours(train);
+       
+                Map<Pair,Set<String>>Common=NP.CommonNeighbours(train,DNeighbour, GeneNeighbour);
+                 System.out.print("Common Pair"+Common.size()+"\n");
+                 Map<Pair,Double>Predicatedassociation=NP.Predict(train,GeneNeighbour,DNeighbour,Common);
+                 NP.writetoFilePrediction(Predicatedassociation);
+                 double Negativecases=0.0;
+                 double Positivecases=0.0;
+                Validation vd = new Validation();
+               List<Double>AUC=vd.NetworkValidat(test,i);
+               double x =AUC.get(0);
+               double y = AUC.get(0);
+               Negativecases+=x;
+                Positivecases+=y;
+        
+         }
+         
+     }  
+        
+                          
 }

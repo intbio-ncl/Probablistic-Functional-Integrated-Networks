@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package DiseaseNetwork;
+package RandomizedDiseaseNetwork;
 import pfinnetwork.*;
+import DiseaseNetwork.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.io.*;
@@ -32,8 +33,8 @@ public void CreateRN(HashMap<Pair,Double>network)throws IOException{
       for(String S: Nodes){
          NodeList.add(S);
 }
-System.out.print(Nodes.size()+"\n");
-System.out.print(Nodes.size()+"\n");
+        System.out.print(Nodes.size()+"\n");
+        System.out.print(Nodes.size()+"\n");
      HashMap<String,Set<String>>DiseaseDegree=new HashMap<String,Set<String>>();
             NodesDistribution N= new NodesDistribution();
              HashMap<String,Integer>Degreedistribution=N.NodesDistribution1();
@@ -44,16 +45,19 @@ System.out.print(Nodes.size()+"\n");
            List<String>NodesList=new ArrayList<String>();
           NodesList.addAll(NodeList);
            HashMap<Pair,Double>newnetwork=new HashMap<Pair,Double>();
+           int counter =Scores.size()-1;
             for(String d:Degree.keySet()){
                  int nodedegree=Degree.get(d);
-                 while(nodedegree>0){
+                 while(nodedegree>0&&counter>0){
+                    
                         Random random = new Random();
                         int randomNumber = random.nextInt(NodesList.size());
                          int randomnodedegree=Degree.get(NodesList.get(randomNumber));
-                        if(!NodesList.get(randomNumber).equals(d)&&!newnetwork.containsKey(new Pair(d,NodesList.get(randomNumber)))){//&&randomnodedegree>0){
-                            newnetwork.put(new Pair(d,NodesList.get(randomNumber)),Scores.get(randomNumber));
+                        if(!NodesList.get(randomNumber).equals(d)&&!newnetwork.containsKey(new Pair(d,NodesList.get(randomNumber)))&&randomnodedegree>0){
+                            newnetwork.put(new Pair(d,NodesList.get(randomNumber)),Scores.get(counter));
                             nodedegree--;
                             randomnodedegree--;
+                             counter--;
                          //int degreeCounter=Degree.get(NodesList.get(randomNumber));
                          // degreeCounter=degreeCounter-1;
                         //if(randomnodedegree==0){NodesList.remove(randomNumber);}
@@ -63,7 +67,7 @@ System.out.print(Nodes.size()+"\n");
 
                  
  }
-         NodesList.remove("d");
+         //NodesList.remove("d");
         
       }             
 

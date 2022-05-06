@@ -88,7 +88,7 @@ public class DrugSimilarityJaccardIndex {
 
                           All.add(dis2);
 }
-                     System.out.print("Common"+CShareddrugs.get(p)+"\n");
+                     //System.out.print("Common"+CShareddrugs.get(p)+"\n");
                      
                       //System.out.print("ALL"+ALL+"\n");
                       double pairaverage=(double)CShareddrugs.get(p)/All.size();
@@ -96,7 +96,7 @@ public class DrugSimilarityJaccardIndex {
                     outi.append(p.getD()+"\t"+p.getG()+"\t"+pairaverage+"\n");
                    
                     //for(String sg:CSharedDrugs.get(p) ){
-                       System.out.print("JC"+pairaverage+"\n");
+                      // System.out.print("JC"+pairaverage+"\n");
                      sum+=pairaverage;
                      
                     //ClusterSharedGenes.add(sg);
@@ -126,7 +126,7 @@ public class DrugSimilarityJaccardIndex {
 
          //if(ClusterSharedGenes.size()>1){
 
-            System.out.print(sum+"\n"); 
+            //System.out.print(sum+"\n"); 
               //System.out.print(size+"\n"); 
               Average= sum/ClustersPairs2.get(i).size();
                      
@@ -165,10 +165,10 @@ finally {
 
                           All.add(dis2);
 }
-                     System.out.print("Common"+CShareddrugs.get(p)+"\n");
+                     //System.out.print("Common"+CShareddrugs.get(p)+"\n");
                       double pairaverage=(double)CShareddrugs.get(p)/All.size();
                     //for(String sg:CSharedDrugs.get(p) ){
-                       System.out.print("JC"+pairaverage+"\n");
+                      // System.out.print("JC"+pairaverage+"\n");
                      sum+=pairaverage;
                      
                     //ClusterSharedGenes.add(sg);
@@ -188,7 +188,7 @@ finally {
 
          //if(ClusterSharedGenes.size()>1){
 
-            System.out.print(sum+"\n"); 
+            //System.out.print(sum+"\n"); 
               //System.out.print(size+"\n"); 
               Average= sum/ClustersPairs2.get(i).size();
                      
@@ -204,7 +204,7 @@ finally {
 }  NetworkAverage=TotalAV/CG.size();
 
   //System.out.print("TotalAV"+"\t"+TotalAV+"\n");
-     System.out.print("Average"+"\t"+TotalAV/CG.size()+"\n");
+     //System.out.print("Average"+"\t"+TotalAV/CG.size()+"\n");
       //System.out.print("size"+"\t"+CG.size()+"\n");
      //System.out.print(CG.get("cluster33"));
 PrintWriter out1 = null;

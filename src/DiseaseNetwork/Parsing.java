@@ -46,13 +46,13 @@ public class Parsing{
                        Set<String>genes=DiseaseGenes.get(d1);
                         for(String d2: DiseaseGenes.keySet()){
                             Set<String>sharedG=new HashSet<String>();
-                             //if(!d1.equals(d2)){
+                             if(!d1.equals(d2)){
                                 
                                  Set<String>genes2=DiseaseGenes.get(d2);
                                   for(String g: genes){
                                       if(genes2.contains(g)){
                                          sharedG.add(g);
-//}
+}
 }
 
 }
@@ -122,7 +122,7 @@ PrintWriter out1 = null;
             out1 = new PrintWriter(new BufferedWriter(new FileWriter(outFileName)));
             
             for (String s : DiseaseGenes.keySet()) {
-                out1.println(s+"\t"+DiseaseGenes.get(s).size());
+                out1.println(s+"\t"+DiseaseGenes.get(s));
             }
             
             
@@ -226,10 +226,10 @@ public HashMap<Pair,Integer>CommonDrugs() throws IOException {
                                   for(String g: drugs){
                                       if(drugs2.contains(g)){
                                          shareddrugs.add(g);
-//}
+}
 }
 
-}
+//}
                  if(!shareddrugs.isEmpty()){
                SharedDrugs.put(new Pair(d1,d2),shareddrugs.size());
 }}

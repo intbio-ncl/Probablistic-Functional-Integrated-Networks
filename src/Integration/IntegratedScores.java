@@ -52,17 +52,24 @@ public class IntegratedScores {
         }
 
         Map<Pair, Double> scores = new HashMap<Pair, Double>();
+        Map<Pair,Map<String,Double>>associationevidence=new HashMap<Pair,Map<String,Double>>();
         for (Pair pair : Bio.getAllPairs()) {
             List<Double> scoresInOrder = new ArrayList<Double>();
+           // List<Map<String,Double>>EvidenceScore=new ArrayList<Map<String,Double>>();
+            Map<String,Double>evidence=new HashMap<String,Double>();
             for (String ds : datasetsRankedByScore) {
 
-                if (Bio.getAlldatasets().get(ds).contains(pair)) {
+                if (Bio.getBio().get(ds).contains(pair)) {
                     Double score = lls.get(ds);
+                   
                     if (score == null) {
                         throw new NullPointerException("Null score for :" + ds);
 
                     }
+                    double dscore=(double) Math.round(score * 100) / 100;
+                    evidence.put(ds, dscore);
                     scoresInOrder.add(score);
+                    
                 }
 
             }
@@ -71,7 +78,9 @@ public class IntegratedScores {
             if (roundOff > 0) {
 
                 scores.put(pair, roundOff);
+                associationevidence.put(pair, evidence);
             }
+          // System.out.print(associationevidence+"\n");
         }
         final Comparator<Double> ordering1= Collections.<Double>reverseOrder() ;
          List<Pair> PairorderebyScoreValue = new ArrayList<Pair>(scores.keySet());
@@ -87,9 +96,10 @@ public class IntegratedScores {
             out2 = new PrintWriter(new BufferedWriter(new FileWriter("rankintegrated.txt")));
             
             for (Pair i :PairorderebyScoreValue) {
-                out2.println(i.getD() + "\t" + i.getG()+"\t" + scores.get(i));
+               // if(scores.get(i)>=15){
+                out2.println(i.getD() + "\t" + i.getG()+"\t" + scores.get(i)+", "+associationevidence.get(i));
                
-            }
+            }//}
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -107,8 +117,8 @@ public class IntegratedScores {
         double LLS = 0.0;
 
         for (int i = 0; i < scoresInOrder.size(); i++) {
-            double raw_score = scoresInOrder.get(i);
-            double denominator = Math.pow(1.2, i);
+            double raw_score = scoresInOrder.get(i);    
+            double denominator = Math.pow(1.1, i);
             double scaled_score = raw_score / denominator;
 
             LLS += scaled_score;
@@ -118,6 +128,27 @@ public class IntegratedScores {
 
         return LLS;
 
+    }
+    
+    Map<String,Integer>DatasetRank(final Map<String, Double> lls, final Map<String, Double> ranking, final Comparator<Double> ordering, BuildingBioGrid Bio){
+    
+         List<String> datasetsRankedByScore = new ArrayList<String>(lls.keySet());
+         Map<String,Integer>rank=new HashMap<String,Integer>();
+        Collections.sort(datasetsRankedByScore, new Comparator<String>() {
+        
+        
+            public int compare(String o1, String O2) {
+                return ordering.compare(ranking.get(o1), ranking.get(O2));
+            }
+        });
+         int count = 1;
+            for (String i : datasetsRankedByScore) {
+                rank.put(i,count);
+                count++;
+            }
+    
+    return rank;
+    
     }
 }
 

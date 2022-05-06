@@ -22,7 +22,7 @@ import pfinnetwork.*;
 public class Score {
     
     public Map<String,Double> ScoredData(goldstandard LTH, BuildingBioGrid Bio){
-    
+    int infinitycounter=0;
     //System.out.println("getting LLs....");
     Map<String,Double> dataSetToScore = new HashMap<String, Double>();
     double highscore = 0;
@@ -32,18 +32,25 @@ public class Score {
    
     if (lls>0 && !lls.isNaN())
     {
-    //System.out.print(lls +"\t is the LLS for\t" + dataset);
+    //System.out.print(lls +"\t is the LLS for\t" + dataset);*/
     dataSetToScore.put(dataset, lls);
+    
+    }
+    
+  /*if(lls<=0 || lls.isNaN())
+        {
+    //System.out.print(lls +"\t is the LLS for\t" + dataset);
+        dataSetToScore.put(dataset, 0.0);
+    
+    }*/
     if (lls> highscore && !lls.isInfinite()){
         highscore = lls;
+        
+       
     }
     }
-    else{
-           // System.out.println(lls + "\t is the LLS for\t" + dataset);
     
-            //System.out.println(dataset + " \t will not be used for integration");
-    }
-    }
+    
     double finalhighscore = Math.ceil(highscore+1 );
     
     /*System.out.println("scoring done");
@@ -52,18 +59,19 @@ public class Score {
     for(String datasett : new HashSet<String>(dataSetToScore.keySet()))
     {
         if(dataSetToScore.get(datasett).isInfinite()){
-        dataSetToScore.put(datasett,finalhighscore);
+           dataSetToScore.put(datasett,finalhighscore);
+           infinitycounter++;
         }
     } 
     
-    
+    System.out.print("infinity"+infinitycounter+"\t");
     String outfile = "LLS.txt";
     try{
     BufferedWriter out = new BufferedWriter(new FileWriter(outfile));
        out.write("The number of scored datasets\t" + dataSetToScore.size() + "\n");
     for(String s : dataSetToScore.keySet()){
         
-        out.write(s + "\t" + dataSetToScore.get(s) +"\n");
+        out.write(s + "\t" + dataSetToScore.get(s)+"\t"+ Bio.getBio().get(s).size()+"\n");
         }
     out.close();
     }

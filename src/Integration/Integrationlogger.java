@@ -25,7 +25,7 @@ public class Integrationlogger {
         for(Map.Entry<Pair, Double> row : LLS.entrySet()){
             
             
-            pw.println(row.getKey().getD() + "\t" + row.getKey().getG()+ "\t" + row.getValue());
+            pw.println(row.getKey().getD() + "\t" + row.getKey().getG() + "\t" + row.getValue());
         
         }
         pw.flush();

@@ -16,20 +16,21 @@ public class Validation {
    
    
     
-public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException {
+public List<Double> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException {
     Map<Double, Double> AUC=new HashMap<>();
      int count = 0;
      int sumP=0;
     int sumN=0;
+    double AUCC=0.0;
     Set<Pair>goldStandard= new HashSet<>();
     Set<String>goldStandardGene= new HashSet<>();
     Set<String>goldStandardDisease= new HashSet<>();
-    Set<List>Arrays=new HashSet<List>();
+    List<Double>Arrays=new ArrayList<Double>();
     Map<Double, Set<Pair>> scoredAssociations=new HashMap<>();
     List<Double> scores;
      Set<Pair> sample;
       int check;
-     double[] scoresToPLot= new double[10000];
+     double[] scoresToPLot= new double[2000];
     
 
         
@@ -51,9 +52,10 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
         
        File bioFile = new File("Prediction.txt");
             BufferedReader in = new BufferedReader(new FileReader(bioFile));
-            in.readLine();
+            //in.readLine();
             String line;
-            while ((line = in.readLine()) != null&&count<10000) {
+            if(bioFile.length()!=0){
+              while ((line = in.readLine()) != null) {
                 String[] colums = line.split("\t");
                 from = colums[0];
                 to = colums[1];
@@ -79,10 +81,10 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
                     pairs.add(P);
                     scoredAssociations.put(score, pairs);
                 }
-            }
+            }}
         
        
-  
+          if(!scoredAssociations.isEmpty()){
         Set<Double> allScores = scoredAssociations.keySet();
         List<Double> sortedScores = new ArrayList<>();
         for (double scored : allScores) {
@@ -105,7 +107,7 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
         for (int i = 0; i < scoresToPLot.length; i++) {
             //System.out.println(scoresToPLot[i] + "\t" + i);
         }
-    
+          
              
     /**
      * Export the values to allow for plotting in r
@@ -115,7 +117,7 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
             
             bw = new BufferedWriter(new FileWriter(new File(j+"Validation.txt")));
             
-        List<Double>SensetivityList=new ArrayList<Double>();
+        List<Integer>Array=new ArrayList<Integer>();
              List<Double>SpecificityList=new ArrayList<Double>();
              List<Double>Recall=new ArrayList<Double>();
              List<Double>PrecisionList=new ArrayList<Double>();
@@ -130,9 +132,10 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
                for (Pair p : allPairsLess) {
                 if (goldStandard.contains(p)) {
                 falseNegative++;
-                     } else if(!goldStandard.contains(p)&&goldStandardGene.contains(p.getG())&&goldStandardDisease.contains(p.getD())) {
+                     }
+                else if(!goldStandard.contains(p)&&goldStandardGene.contains(p.getG())&&goldStandardDisease.contains(p.getD())) {
                 trueNegative++;      
-            }
+           }
         }
         Set<Pair>allPairsGreater= getAllPairsGreaterThanScore(i,scores,scoresToPLot,scoredAssociations);
                 for (Pair p : allPairsGreater) {
@@ -140,45 +143,50 @@ public Set<List> NetworkValidat(Map<Pair,Double>NetWork,int j)throws IOException
                 truePositive++;
             } else if(!goldStandard.contains(p)&&goldStandardGene.contains(p.getG())&&goldStandardDisease.contains(p.getD())) {
                 falsePositive++;      
-            }
+           }
         }
-       // sumN=+trueNegative;
-        //sumP=+truePositive;
+       sumN+=(trueNegative + falseNegative);
+        sumP+=(truePositive +falsePositive);
         double sensitivity = truePositive/ (truePositive+(falseNegative*1.0));//tp / (dm.getGoldStandard().getTruePositives().size() * 1.0);
         double specificity = trueNegative/ (trueNegative+(falsePositive*1.0));//(negClassed - (dm.getGoldStandard().getTruePositives().size() - tp)
-        //double Precision= truePositive / (truePositive + (falsePositive*1.0));
+        double Precision= truePositive / (truePositive + (falsePositive*1.0));
         double AUCv = (sensitivity+specificity)/2;
-       // double Accuracy= (truePositive+trueNegative) /(truePositive+trueNegative+falseNegative+falsePositive);
-        //double positivecases=truePositive;
-        //double negativecases=trueNegative;
-       //double F1 = 2 * (Precision * sensitivity) / (Precision + sensitivity);
+      double Accuracy= (truePositive+trueNegative) /(truePositive+trueNegative+falseNegative+falsePositive);
+        double positivecases=truePositive;
+        double negativecases=trueNegative;
+       double F1 = 2 * (Precision * sensitivity) / (Precision + sensitivity);
                    //SensetivityList.add(sensitivity);
                    //SpecificityList.add(specificity);
                   // PrecisionList.add(Precision);
                   // Recall.add(sensitivity);
                    
-            //System.out.print(falseNegative+ "\t" + trueNegative+ "\t" + truePositive+ "\t" + falsePositive+ "\t"+ "score"+score + "\t" +allPairsLess.size()+"\t"+allPairsGreater.size()+"\n");
+           // bw.append(falseNegative+ "\t" + trueNegative+ "\t" + truePositive+ "\t" + falsePositive+"\n");
             //System.out.println(sensitivity + "\t" + specificity+"\n");
-            bw.append(truePositive+"\t"+trueNegative/*"\t"/*+falseNegative+"\t"+falsePositive*/+"\t"+sensitivity+"\t"+specificity+"\t"+AUCv+"\t"/*Precision+"\t"+Accuracy*/+"\n");
+            double AUC1=(sensitivity+specificity)/2;
+            //System.out.print("Average AUC"+AUC1);
+            AUCC+=AUC1;
+           bw.append(sensitivity+"\t"+specificity+"\t"+Precision+"\t"+Accuracy+"\n");
             //System.out.print(trueNegative+"\t"+(trueNegative+(falsePositive*1.0))+"\n");
         //Arrays.add( SensetivityList);
         //Arrays.add(SpecificityList);
         //Arrays.add(PrecisionList);
         //Arrays.add(Recall);
         }
-        
+     
          
            bw.close();
-        
+           //System.out.print("Average AUC"+AUC+"\n");
+          //System.out.print("Average AUC\t"+(AUCC/2000)+"\n");
 }
         catch(Exception e){
            e.printStackTrace();
 
                            }  
         
-    
+          }
  
-  //System.out.print("\n"+"Positive cases"+sumP/10000+"\n");
+ // Arrays.add((double)(sumP/10000));
+  //Arrays.add((double)(sumN/10000));
    //System.out.print("Negative cases"+sumN/10000+"\n");
          
     return Arrays;

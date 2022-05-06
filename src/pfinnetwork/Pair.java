@@ -73,7 +73,7 @@ public class Pair {
     if(!(anotherPair instanceof Pair)){
         return false;}
     Pair anotherPairCast = (Pair) anotherPair;
-    return D.equals(anotherPairCast.getD()) && G.equals(anotherPairCast.getG());//|| D.equals(anotherPairCast.getG()) && G.equals(anotherPairCast.getD());
+    return D.equals(anotherPairCast.getD()) && G.equals(anotherPairCast.getG())|| D.equals(anotherPairCast.getG()) && G.equals(anotherPairCast.getD());
     }
     
 }

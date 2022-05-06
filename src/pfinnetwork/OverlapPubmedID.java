@@ -21,8 +21,16 @@ public class OverlapPubmedID {
             BufferedWriter bw = null;
             
             bw = new BufferedWriter(new FileWriter(new File("overlap_Pubmed_G-D association.txt")));
+            //bw.append("GENOMICS_ENGLAND"+"\n");
+            for(Triple t:datasets1.get("GENOMICS_ENGLAND"))
+                bw.append(t+"\n");
             for(String source : datasets1.keySet()) {
+                
                 Set<Triple> Associations = datasets1.get(source);
+                for(Triple t:Associations){
+                    
+                }
+                
                 Set<Triple> OVERLAPSET = new HashSet<Triple>();
                 double total = 0.0;
                 for (Triple s : Associations) {
@@ -32,6 +40,7 @@ public class OverlapPubmedID {
                         Set<Triple> Associations2 = datasets1.get(source2);
                             if (Associations2.contains(s)) {
                                 overlap++;
+                                
                                  
                             }
                               
@@ -42,7 +51,58 @@ public class OverlapPubmedID {
                    OVERLAPSET.add(s);
                  }
                 
-                bw.append(source + "\t" + s+ "\t"+ overlap + "\n");
+               bw.append(source + "\t" + s+ "\t"+ overlap + "\n");
+              
+                   }
+                   OVERLAP.put(source, OVERLAPSET); 
+
+                           }               
+                bw.close();
+                              }
+        catch(Exception e){
+           e.printStackTrace();
+
+                           }  
+        return OVERLAP;     
+}
+    public Map<String,Set<String>>OverlapPubMed(Map<String,Set<String>>datasets1){
+        Map<String,Set<String>>OVERLAP=new HashMap<String,Set<String>>();
+           
+        try {
+            BufferedWriter bw = null;
+            
+            bw = new BufferedWriter(new FileWriter(new File("overlap_Pubmed.txt")));
+            bw.append("CLINGEN"+"\n");
+            for(String p :datasets1.get("CLINGEN"))
+                bw.append(p+"\n");
+            for(String source : datasets1.keySet()) {
+                
+                Set<String> Associations = datasets1.get(source);
+                for(String p:Associations){
+                    
+                }
+                
+                Set<String> OVERLAPSET = new HashSet<String>();
+                double total = 0.0;
+                for (String s : Associations) {
+                    int overlap = 0;
+                    for(String source2 : datasets1.keySet()) {
+                        if (!source.equals(source2)) {
+                        Set<String> Associations2 = datasets1.get(source2);
+                            if (Associations2.contains(s)) {
+                                overlap++;
+                                
+                                 
+                            }
+                              
+                        }
+                           
+                    }
+                if(overlap>0){
+                   OVERLAPSET.add(s);
+                 }
+                
+               // bw.append(source + "\t" + s+ "\t"+ overlap + "\n");
               
                    }
                    OVERLAP.put(source, OVERLAPSET); 

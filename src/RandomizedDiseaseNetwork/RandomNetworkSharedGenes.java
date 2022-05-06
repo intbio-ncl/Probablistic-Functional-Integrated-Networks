@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 
-package DiseaseNetwork;
+package RandomizedDiseaseNetwork;
+import DiseaseNetwork.*;
 import java.util.*;
 import java.io.*;
 import pfinnetwork.*;
@@ -15,16 +16,18 @@ import pfinnetwork.*;
  */
 public class RandomNetworkSharedGenes {
 public double RandomNetworkAverage2()throws IOException{
-              Parsing PG =new Parsing();
-        HashMap<Pair,Integer>CSharedgenes=PG.parseGenes();
-             List<Double> AverageList=new ArrayList<Double>();
+            Parsing Parse=new Parsing();
+            HashMap<Pair,Set<String>>CGenes=Parse.CommonGenes();
+            HashMap<String,Set<String>>AllGenes=Parse.DiseasesGenes();
+            List<Double> AverageList=new ArrayList<Double>();
              double sum =0.0;
              double RandomAverage=0;
              for( int i =0; i<100; i++){
-                 SharedGenes SG=new SharedGenes();
-                 String outfile="outRandom"+i;
-                  double Average=SG.sharedgenes(outfile,CSharedgenes);
-                  AverageList.add(Average);
+                
+        GeneticSimilarityJaccardIndex  GSJC=new GeneticSimilarityJaccardIndex ();
+        double JaccardAcerage=GSJC.JaccardSimilarity("outRandomcluster"+i,CGenes,AllGenes);
+                  System.out.print(JaccardAcerage+"\n");
+                  AverageList.add(JaccardAcerage);
                   }
                 for(int j=0; j<AverageList.size();j++){
                     sum+=AverageList.get(j);
@@ -34,6 +37,6 @@ public double RandomNetworkAverage2()throws IOException{
     RandomAverage=sum/100;
 System.out.print("\n"+RandomAverage+"\n");
 return RandomAverage;
-
+  
 }
 }

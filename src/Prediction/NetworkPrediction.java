@@ -20,36 +20,43 @@ import pfinnetwork.*;
  */
 public class NetworkPrediction {
 
-    public Map<Pair,Double> Predict(Map<Pair,Double>Network,Map<String,Set<Pair>>GeneNeighbours,Map<String,Set<String>>DiseaseNeighbours,Map<Pair,Set<String>>CommonNeighbours){ 
+    public Map<Pair,Double> Predict(Map<Pair,Double>Network,Map<String,Set<Triple>>GeneNeighbours,Map<String,Set<String>>DiseaseNeighbours,Map<Pair,Set<String>>CommonNeighbours){ 
              
         Map<Pair,Double>Predictedassociations=new HashMap<Pair,Double>();
+        
         for(Pair P:CommonNeighbours.keySet()){
-           JaccardIndex Union=TotalWeighted(P.getG(),P.getD(),GeneNeighbours.get(P.getG()),DiseaseNeighbours.get(P.getD()),Network);
-            Set<Pair>CommonGeneEdged=new HashSet<Pair>();
-            Set<String>AllGeneDirect=new HashSet<String>();
-            Set<String>CommonDirectNeighbours=new HashSet<String>();
-            for(Pair p:GeneNeighbours.get(P.getG())){
-                AllGeneDirect.add(p.getD());
-                                   
-                                   }
-            for(String i:CommonNeighbours.get(P) ){
-                for(Pair P1: GeneNeighbours.get(P.getG())){
-                    if(P1.getG().equals(i)){
-                        CommonGeneEdged.add(P1);
-                        CommonDirectNeighbours.add(P.getD());
-                                              }
-                         
-                                         }
+            //System.out.print(P+"\n");
+            
+            Set<Pair>DiseaseCommon=new HashSet<Pair>();
+            Set<Triple>GeneCommon=new HashSet<Triple>();
+           Set<Pair>unweightedfirstcommonneighbours=new HashSet<Pair>();
+           Set<Pair>unweightedsecondcommonneighbours=new HashSet<Pair>();
+            for(String g:CommonNeighbours.get(P)){
+             DiseaseCommon.add(new Pair(P.getD(),g));
+                    for(Triple t:GeneNeighbours.get(P.getG())){
+                       if(t.getPubmedID().equals(g)){
+                            GeneCommon.add(t);
+                 
+                 }
+                     }}
+            for(Triple T:GeneCommon){
+            
+               unweightedfirstcommonneighbours.add(new Pair(T.getG(),T.getD()));
+               unweightedsecondcommonneighbours.add(new Pair(T.getG(),T.getPubmedID()));
             }
-           JaccardIndex intersection=TotalWeighted(P.getG(),P.getD(),CommonGeneEdged,CommonNeighbours.get(P),Network);
-            double UnweightedCN=CommonNeighbours.get(P).size()+CommonGeneEdged.size()+CommonDirectNeighbours.size();
-            double Jaccardunweighted=UnweightedCN/(GeneNeighbours.get(P.getG()).size()+DiseaseNeighbours.get(P.getD()).size()+AllGeneDirect.size());
-           double CommonNeighbours2=intersection.getDtotal()+intersection.getGtotalweight();
-          // double PA=intersection.getDtotal()*intersection.getGtotalweight();
-           double Jaccard=CommonNeighbours2/(Union.getDtotal()+Union.getGtotalweight());
-           Predictedassociations.put(P,Jaccard);
+           // System.out.print(DiseaseCommon+"\n");
+            // System.out.print(GeneCommon+"\n");
+                    NetworkPrediction NP=new NetworkPrediction();
+                   JaccardIndex Union= NP.TotalWeighted(P.getG(), P.getD(), GeneNeighbours.get(P.getG()),DiseaseNeighbours.get(P.getD()), Network);
+                    JaccardIndex Intersection=NP.TotalWeighted(P.getG(), P.getD(), GeneCommon,CommonNeighbours.get(P), Network);;
+                   double weightedCommonNeighbour= Intersection.getDtotal()+Intersection.getGtotalweight();
+                   double weightedJaccardIndex= weightedCommonNeighbour/(Union.getGtotalweight()+Union.getDtotal());
+                  // double UnweightedCommonNumber =GeneCommon.size()+DiseaseCommon.size();
+                  // double UnweightedJaccardIndex= UnweightedCommonNumber/(GeneNeighbours.size()+DiseaseNeighbours.size());
+                    
+           Predictedassociations.put(P,weightedJaccardIndex);
+        }
            
-           }
             return Predictedassociations;
             
                 }
@@ -78,42 +85,22 @@ public class NetworkPrediction {
             DFinalNeighbour.put(d, DNeighbour);
             }
        return DFinalNeighbour;
-            /* Set<Pair>CNeighbour=new HashSet<Pair>();
-             Set<Pair>CNeighbour2=new HashSet<Pair>();
-             for(Pair Pe: GNeighbour){
-             CNeighbour.add(Pe);
-             CNeighbour2.add(Pe);
-             }
-             for(Pair P:CNeighbour){
-                 for(Pair P2: CNeighbour2){
-                     if(P.getG().equals(P2.getG())){
-                       if(Network.get(P)+Network.get(new Pair(P.getD(),G))>=Network.get(P2)+Network.get(new Pair(P2.getD(),G))){
-                           GNeighbour.remove(P2);
-                       }else{
-                          GNeighbour.remove(P);
-                       }
-                     
-                     
-                     }
-                     else{
-                        GNeighbour=GNeighbour;
-                     
-                     
-                     }
-                 }
-             
-             }*/
-             
+          
+            
     }
-     public Map<String,Set<Pair>> GNeighbours(Map<Pair,Double>Network){
+     public Map<String,Set<Triple>> GNeighbours(Map<Pair,Double>Network){
         Set<String>Genes=new HashSet<String>();
-        Map<String,Set<Pair>>GNEIGHBOURS=new HashMap<String,Set<Pair>>();
+        Map<String,Set<Triple>>GNEIGHBOURS=new HashMap<String,Set<Triple>>();
         for(Pair P:Network.keySet()){
                 Genes.add(P.getG());
         }
             for(String gene:Genes){
                Set<String>GInNeighbour=new HashSet<String>();
                Set<Pair>GNeighbour=new HashSet<Pair>(); 
+               Set<String>GENES=new HashSet<String>();
+               Set<Triple>GenesNeighbours2=new HashSet<Triple>();
+               Set<Triple>GenesNeighbours=new HashSet<Triple>();
+               Set<Triple>GenesNeighboursfinal=new HashSet<Triple>();
                 for(Pair P1:Network.keySet()){
                     if(gene.equals(P1.getG()))
                     GInNeighbour.add(P1.getD());
@@ -128,57 +115,87 @@ public class NetworkPrediction {
                      
                      }
                  
-                 
-        }}
-         if(!GNeighbour.isEmpty()){
-         GNEIGHBOURS.put(gene, GNeighbour);
-            }
-            }
+              
+        }
+         }
+         for( Pair pair:GNeighbour ){
+              
+            GenesNeighbours.add(new Triple(gene,pair.getD(),pair.getG()));
+            GENES.add(pair.getG());
+            
+         } 
+   // System.out.print(GenesNeighbours.size()+"\t");
+         
+        //System.out.print(GenesNeighbours.size()+"\t"+GENES.size()+"\n");
+         if(GenesNeighbours.size()>0){
+              GNEIGHBOURS.put(gene, GenesNeighbours);
+            }} //System.out.print(GNEIGHBOURS);
          return GNEIGHBOURS;
+        
      }
- public Map<Pair,Set<String>>CommonNeighbours(Map<Pair,Double>Network,Map<String,Set<String>>DN, Map<String,Set<Pair>>GN){
+ public Map<Pair,Set<String>>CommonNeighbours(Map<Pair,Double>Network,Map<String,Set<String>>DN, Map<String,Set<Triple>>GN){
          Map<Pair,Set<String>>f = new HashMap<Pair,Set<String>>();
          
          
          for(String G:GN.keySet()){
-             
-             Set<Pair>genesneighbour=GN.get(G);
               Set<String> GSet =new HashSet<String>();
-             
-                 for(Pair P: genesneighbour){
-                     GSet.add(P.getG());
+                 for(Triple P: GN.get(G)){
+                     GSet.add(P.getPubmedID());
                  }
                  for(String D:DN.keySet()){
-                     if(!Network.containsKey(new Pair(D,G))){
-                         Set<String>CommonGenes=new HashSet<String>();
-                     Set<String>Diseasesneighbours=DN.get(D);
-                 
-                  
-                       for(String d: Diseasesneighbours){
+                     Set<String>CommonGenes=new HashSet<String>();
+                        for(String d: DN.get(D)){
                             if(GSet.contains(d)){
                                 CommonGenes.add(d);
                                }
-                       }
-                 
-                 
-                       
+                        }
                   if(!CommonGenes.isEmpty()){
                       f.put(new Pair(D,G), CommonGenes);
                   }      
     
-    }
-         }}
+    }}
+        
                  return f;   
          }
  
-  public JaccardIndex TotalWeighted(String G, String D,Set<Pair>GNeighbours,Set<String>DNeighbours,Map<Pair,Double>Network){
+  public JaccardIndex TotalWeighted(String G, String D,Set<Triple>GNeighbours,Set<String>DNeighbours,Map<Pair,Double>Network){
          
       double GTotal =0;
        double Dtotal=0;
-      for(Pair P:GNeighbours){
-           GTotal+=Network.get(P)+Network.get(new Pair(P.getD(),G));
+       List<Triple>similartriple=new ArrayList<Triple>();
+       similartriple.addAll(GNeighbours);
+          for(int i=0;i<GNeighbours.size();i++){
+               List<Double>similaredges=new ArrayList<Double>();
+               double score1=0.0;
+               double score2=0.0;
+              for(int j=i+1;j<GNeighbours.size();j++){
+              if(similartriple.get(i).getPubmedID().equals(similartriple.get(j).getPubmedID())){
+                   score1+=Network.get(new Pair(similartriple.get(i).getG(),similartriple.get(i).getD()))+
+                          Network.get(new Pair(similartriple.get(i).getG(),similartriple.get(i).getPubmedID()));
+                   score2+=Network.get(new Pair(similartriple.get(j).getG(),similartriple.get(j).getD()))+
+                          Network.get(new Pair(similartriple.get(j).getG(),similartriple.get(j).getPubmedID()));
+                 similaredges.add(score1);
+                 similaredges.add(score2);
+              
+              }
+              }
+              if(!similaredges.isEmpty()){
+                 GTotal+=Collections.max(similaredges);
+              
+              }
           
-           }
+              else{
+                  GTotal+=Network.get(new Pair(similartriple.get(i).getG(),similartriple.get(i).getD()))+
+                          Network.get(new Pair(similartriple.get(i).getG(),similartriple.get(i).getPubmedID()));;
+              }
+                  
+          }
+          //System.out.print(T+"\n");
+           //System.out.print(Network.get(new Pair(T.getD(),T.getG()))+"\n");
+           //System.out.print(Network.get(new Pair(T.getG(),T.getPubmedID()))+"\n");
+           
+          
+           
       
        for(String d:DNeighbours){
            Dtotal+=Network.get(new Pair(D,d));
