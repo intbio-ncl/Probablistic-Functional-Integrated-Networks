@@ -17,14 +17,12 @@ public class BioGridList {
     String pubmedID;
     String source;
     String association;
-    double GDAscore;
-    public BioGridList(String D, String G, String pubmedID, String source, String association,double GDAscore){
+    public BioGridList(String D, String G, String pubmedID, String source, String association){
      this.D =D;
      this.G =G;
      this.pubmedID = pubmedID;
      this.source = source;
      this.association = association;
-     this.GDAscore=GDAscore;
     }
     public String getD(){
     return D;
@@ -41,11 +39,8 @@ public class BioGridList {
     public String getAssociation(){
         return association;
     }
-    public double getGDAscore(){
-        return GDAscore;
-    }
     public String toString(){
-     return D + "," + G+"," + pubmedID+","+source+","+ association ;
+     return D + "," + G+"," + pubmedID+","+source + "," + association;
      
      }
     @Override

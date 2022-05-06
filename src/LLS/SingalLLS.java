@@ -24,7 +24,7 @@ public class SingalLLS {
     int trueNeggs = LTH.numberOfNegative();
     int falsePosData = pairsNotInGoldStandard(LTH, data);
     int numberofPairsData = data.size();
-    /*System.out.println("Total Genes in goldS \t \t " + allgenesgs);
+   /* System.out.println("Total Genes in goldS \t \t " + allgenesgs);
     System.out.println("Possible Pairs in golds \t \t" + possiblePairsgs);
     System.out.println(" tru pos gs \t \t" + truePosgs);
     System.out.println("true neg gs \t \t" + trueNeggs);

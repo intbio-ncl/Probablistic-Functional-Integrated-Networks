@@ -33,7 +33,6 @@ public class Conversion {
                             UMLSID = split[3];
                          if(Source.equals("UMLS")){
                           DOIDterms.add(new Pair(split[0],split[3]));
-                          
 }
 }
         Set<String>DiseaseinDO=new HashSet<String>();
@@ -44,15 +43,15 @@ public class Conversion {
 
 }System.out.print("number of disease in DO"+DiseaseinDO.size()+"\n");
         DiseaseClusters DC=new DiseaseClusters();
-        HashMap<String,Set<String>>DCL=DC.clusters("cluster189.txt");
+        HashMap<String,Set<String>>DCL=DC.clusters("outprobabilistic");
         HashMap<String,Set<String>>newDCL=new HashMap<String,Set<String>>();
         for(String i : DCL.keySet()){
             Set<String>DOIDSet=new HashSet<String>();
-            Set<String>clusterdisease=DCL.get(i);
-            
-                   
+            Set<String>clusterdisease=new HashSet<String>();
+            for(String s: DCL.get(i)){
+                   clusterdisease.add(s);
                 for(Pair p: DOIDterms){
-                    if(clusterdisease.contains(p.getG())){
+                    if(p.getG().contains(s)){
                       DOIDSet.add(p.getD());
                    
 }
@@ -61,11 +60,11 @@ public class Conversion {
 }
 }
         
+}
 
 
-
- System.out.print(newDCL.keySet().size());
-               System.out.print(newDCL);
+ //System.out.print(newDCL.keySet().size());
+               //System.out.print(newDCL);
         int c=0;
     for(String i:newDCL.keySet()){
         
@@ -110,7 +109,6 @@ public class Conversion {
             
         finally {
             if (out != null) {
-                
                 out.close();
                 
             }
@@ -124,35 +122,29 @@ public HashMap<String,String>MeSHtoUMLS() throws IOException {
             String filenamee="MRCONSO.RRF";
             File bioFile = new File(filenamee);
             Conversion C = new Conversion();
-            //HashMap<String,String>OMIMtoUMLS=C.ParsingMiner();
+            HashMap<String,String>DDPair=C.ParsingMiner();
             BufferedReader in = new BufferedReader(new FileReader(bioFile));
             in.readLine();
             String line;
-            
-            
-          HashMap<String,String>OMIMtoUMLS=new HashMap<String,String>();
+            String UMLSID;
+            String MeSH;
+          HashMap<String,String>DDUMLS=new HashMap<String,String>();
             while ((line = in.readLine()) != null) {
                             String[] split = line.split("\\|");
-                            String UMLS=split[0];
-                            String Source = split[11];
-                            String UI = split[13];
-                           if (Source.equals("OMIM")&&!UI.equals("NOCODE")) {
-                                OMIMtoUMLS.put(UI, UMLS);
-                                //System.out.print(UMLS+"\t"+"\t"+UI+"\n");
-                                //System.out.print(split[4]+"\n");
-                           }
-                          
-                                //if(DDPair.containsKey(MeSH)){
-                              // DDUMLS.put(MeSH,UMLSID);
+                            UMLSID = split[0];
+                            MeSH = split[10];
+                                if(DDPair.containsKey(MeSH)){
+                                   DDUMLS.put(MeSH,UMLSID);
 
 
-           // if(OMIMtoUMLS.containsKey("")){System.out.print("yes");}
-//}    
-              
-            }                        
-        System.out.print("Mapp"+OMIMtoUMLS.size()+"\n");           
 
-return OMIMtoUMLS;
+}                 
+
+}
+                       
+        System.out.print("Mapp"+DDUMLS.size()+"\n");           
+
+return DDUMLS;
              
   
 }
@@ -183,56 +175,7 @@ public HashMap<String,String>ParsingMiner() throws IOException {
 return DDPairs;
   
 }
-    public Map<String,String>OMIMtoUMLS() throws IOException {
-        String filenamee = "DOID.txt";
-        File bioFile = new File(filenamee);
-        BufferedReader in = new BufferedReader(new FileReader(bioFile));
-        in.readLine();
-        String line;
-        String DOID;
-        String Source;
-        String UMLSID;
-        Set<Pair> DOIDterms = new HashSet<Pair>();
-        Map<String,String>DOIDtoOMIM=new HashMap<String,String>();
-        Map<String,String>DOIDtoUMLS=new HashMap<String,String>();
-         Map<String,String>UMLStoOMIM=new HashMap<String,String>();
-        while ((line = in.readLine()) != null) {
 
-            String[] split = line.split("\t");
-            DOID = split[0];
-            Source = split[2];
-            UMLSID = split[3];
-            if (Source.equals("UMLS")) {
-                DOIDtoUMLS.put(DOID, UMLSID);
-            }
-            else if(Source.equals("OMIM")){
-                    DOIDtoOMIM.put(DOID, UMLSID);
-                        
-                        
-                        }
-            }
-        
-           for(String d1:DOIDtoUMLS.keySet()){
-               if(DOIDtoOMIM.containsKey(d1)){
-                  UMLStoOMIM.put(DOIDtoOMIM.get(d1),DOIDtoUMLS.get(d1));
-               }
-        }
-           if(UMLStoOMIM.containsValue("")){System.out.print("yes");}
-       //System.out.print(UMLStoOMIM);
-      return UMLStoOMIM; 
+
 }
-    public String mappingtoUMLS(Map<String,String>UMLStoOMIM,String disease){
-           String diseaseIDUMLS="";
-           if(UMLStoOMIM.containsKey(disease)){
-                    diseaseIDUMLS=UMLStoOMIM.get(disease);
-            
-            }
-                
-                else{
-                    diseaseIDUMLS=null;
-    }
-    return diseaseIDUMLS;
-}
-    
-    
-}
+

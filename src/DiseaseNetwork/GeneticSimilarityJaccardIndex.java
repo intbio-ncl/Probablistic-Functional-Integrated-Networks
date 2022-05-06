@@ -20,11 +20,11 @@ public class GeneticSimilarityJaccardIndex {
         HashMap<String,Set<String>>Clusters=DC.clusters(outfile);
         HashMap<String, Set<Pair>>ClustersPairs= DC.ClusterPairs(Clusters);
         HashMap<String, Set<Pair>>ClustersPairs2= DC.ClusterPairs(Clusters);
-        System.out.print("number of clusters"+ClustersPairs);
+        //System.out.print("number of clusters"+ClustersPairs.size());
         //ParsingGWASDB PG =new ParsingGWASDB();
        // HashMap<Pair,Integer>CSharedDrugs=PG.parsedrugcentral();    
 
-        System.out.print(ClustersPairs.size()+"\n");
+        //System.out.print(ClustersPairs.size()+"\n");
         //System.out.print(CSharedG.size());
         Set<String>ClusterDisease=new HashSet<String>();
         Set<String>DrugDiseases2=new HashSet<String>();
@@ -89,7 +89,7 @@ public class GeneticSimilarityJaccardIndex {
 
                           All.add(dis2);
 }
-                     //System.out.print("Common"+CSharedgenes.get(p).size()+"\n");
+                     System.out.print("Common"+CSharedgenes.get(p).size()+"\n");
                      
                       //System.out.print("ALL"+ALL+"\n");
                       double pairaverage=(double)CSharedgenes.get(p).size()/All.size();
@@ -97,7 +97,7 @@ public class GeneticSimilarityJaccardIndex {
                     outi.append(p.getD()+"\t"+p.getG()+"\t"+pairaverage+"\n");
                    
                     //for(String sg:CSharedDrugs.get(p) ){
-                      // System.out.print("JC"+pairaverage+"\n");
+                       System.out.print("JC"+pairaverage+"\n");
                      sum+=pairaverage;
                      
                     //ClusterSharedGenes.add(sg);
@@ -127,7 +127,7 @@ public class GeneticSimilarityJaccardIndex {
 
          //if(ClusterSharedGenes.size()>1){
 
-           // System.out.print(sum+"\n"); 
+            System.out.print(sum+"\n"); 
               //System.out.print(size+"\n"); 
               Average= sum/ClustersPairs2.get(i).size();
                      
@@ -160,7 +160,7 @@ finally {
 }  NetworkAverage=TotalAV/CG.size();
 
   //System.out.print("TotalAV"+"\t"+TotalAV+"\n");
-     //System.out.print("Average"+"\t"+TotalAV/CG.size()+"\n");
+     System.out.print("Average"+"\t"+TotalAV/CG.size()+"\n");
       //System.out.print("size"+"\t"+CG.size()+"\n");
      //System.out.print(CG.get("cluster33"));
 PrintWriter out1 = null;

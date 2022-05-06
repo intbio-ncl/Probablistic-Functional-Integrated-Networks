@@ -56,7 +56,7 @@ public class IntegratedScores {
             List<Double> scoresInOrder = new ArrayList<Double>();
             for (String ds : datasetsRankedByScore) {
 
-                if (Bio.getBio().get(ds).contains(pair)) {
+                if (Bio.getAlldatasets().get(ds).contains(pair)) {
                     Double score = lls.get(ds);
                     if (score == null) {
                         throw new NullPointerException("Null score for :" + ds);
@@ -107,8 +107,8 @@ public class IntegratedScores {
         double LLS = 0.0;
 
         for (int i = 0; i < scoresInOrder.size(); i++) {
-            double raw_score = scoresInOrder.get(i);    
-            double denominator = Math.pow(1.1, i);
+            double raw_score = scoresInOrder.get(i);
+            double denominator = Math.pow(1.2, i);
             double scaled_score = raw_score / denominator;
 
             LLS += scaled_score;

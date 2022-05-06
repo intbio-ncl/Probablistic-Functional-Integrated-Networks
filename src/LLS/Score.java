@@ -32,16 +32,18 @@ public class Score {
    
     if (lls>0 && !lls.isNaN())
     {
-    //System.out.print(lls +"\t is the LLS for\t" + dataset);*/
+    //System.out.print(lls +"\t is the LLS for\t" + dataset);
     dataSetToScore.put(dataset, lls);
-    }
     if (lls> highscore && !lls.isInfinite()){
         highscore = lls;
-       
     }
     }
+    else{
+           // System.out.println(lls + "\t is the LLS for\t" + dataset);
     
-    
+            //System.out.println(dataset + " \t will not be used for integration");
+    }
+    }
     double finalhighscore = Math.ceil(highscore+1 );
     
     /*System.out.println("scoring done");
@@ -61,7 +63,7 @@ public class Score {
        out.write("The number of scored datasets\t" + dataSetToScore.size() + "\n");
     for(String s : dataSetToScore.keySet()){
         
-        out.write(s + "\t" + dataSetToScore.get(s)+"\n");
+        out.write(s + "\t" + dataSetToScore.get(s) +"\n");
         }
     out.close();
     }

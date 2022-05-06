@@ -4,12 +4,10 @@
  * and open the template in the editor.
  */
 
-       
 package LLS;
 import java.io.*;
 import pfinnetwork.*;
 import GoldStandard.*;
-import java.util.*;
 
 /**
  *
@@ -17,21 +15,14 @@ import java.util.*;
  */
 public class DValue {
 
-    public void run(Set<Pair>network) throws IOException{
+    public void run(goldstandard gs) throws IOException{
     
-        String file="Prediction.txt";
-         int points=4000;
+        String file="rankintegrated.txt";
+         int points=10;
     
     //required values
-        Set<String>Diseases=new HashSet<String>();
-        Set<String>Genes=new HashSet<String>();
-        for(Pair p:network){
-            Diseases.add(p.getD());
-            Genes.add(p.getG());
-        
-        }
-         int possibleRels = Diseases.size() * Genes.size();
-         int possibleFalseNeg =possibleRels - network.size();
+         int possibleRels = gs.getDiseases().size() * gs.getGenes().size();
+         int possibleFalseNeg =possibleRels - gs.getPositive().size();
         int truePositive;
      //ranges for the points
          double[] thresholds;
@@ -88,7 +79,7 @@ public class DValue {
         int checked = matchesTruePositives[index][0];
         int tp = matchesTruePositives[index][1];
 
-        if (network.contains(p)) {
+        if (gs.getPositive().contains(p)) {
             //it is a true positive
             tp++;
         }
@@ -133,18 +124,18 @@ public class DValue {
 
         int allAssociations = matchesTruePositivesCUM[0][0];
         System.out.println(allAssociations);
-        System.out.println(network.size());
+        System.out.println(gs.getPositive().size());
 
         for (int i = 0; i < matchesTruePositives.length; i++) {
 
             int negClassed = allAssociations -matchesTruePositivesCUM[i][0];
-            int allNegative = allAssociations - network.size();
+            int allNegative = allAssociations - gs.getPositive().size();
             int tp= matchesTruePositivesCUM[i][1];
             
-            double sensitivity = tp/(network.size()*1.0);       
+            double sensitivity = tp/(gs.getPositive().size()*1.0);       
             //look here again!
             
-            double specificity = (negClassed-(network.size()-tp))/(allNegative*1.0);                
+            double specificity = (negClassed-(gs.getPositive().size()-tp))/(allNegative*1.0);                
                     
            //(allAssociations-(gs.getPositive().size()-allAssociations-matchesTruePositivesCUM[i][1]))/(allAssociations-(gs.getPositive().size()*1.0));
 
@@ -167,3 +158,8 @@ public class DValue {
            
     }
 
+         
+
+   
+       
+    

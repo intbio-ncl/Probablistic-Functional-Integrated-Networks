@@ -15,12 +15,12 @@ import java.util.Map.Entry;
 public class ClusterAnalysis {
 
     
-    public Map<String,Set<String>> clusters(String filename)throws IOException{
+    public Map<String,Set<String>> clusters()throws IOException{
 
            
             HashMap<String,Set<String>>Cluster= new HashMap<String, Set<String>>();
             HashMap<String,Set<String>>ClusterMapping= new HashMap<String, Set<String>>();
-            BufferedReader buf = new BufferedReader(new FileReader(filename));
+            BufferedReader buf = new BufferedReader(new FileReader("outdisease"));
         //in.readLine();
         String line;
         
@@ -30,11 +30,11 @@ public class ClusterAnalysis {
                 Set<String>D=new HashSet<String>();
                 for(String i : value){
                   D.add(i);}
-                  if(D.size()>2){
+                  
                  Cluster.put("cluster"+count,D);
                 count++;
                 
-}        }
+}        
        PrintWriter bw100 = null;
         try {
                   
@@ -63,7 +63,7 @@ public class ClusterAnalysis {
                        
             
 
- //System.out.print(Cluster.get("cluster3740"));
+ System.out.print(Cluster.get("cluster3740"));
 
    //System.out.print(Cluster.get("cluster1"));
           //System.out.print("size\t"+Cluster.size());
@@ -183,60 +183,13 @@ public class ClusterAnalysis {
     return max.getKey();
 }
 
-    public double ClusterAverage(Map<Pair,Double>Network,Map<String,Set<String>>Cluster){
-            Set<String>diseases=new HashSet<String>();
-            Map<String,Set<String>>Listofgenes=new HashMap<String,Set<String>>();
-                for(Pair P:Network.keySet()){
-                    diseases.add(P.getD());
-              
-              }
-                for(String i:diseases){
-                  Set<String>genediseases=new HashSet<String>();
-                 for(Pair P2 : Network.keySet()){
-                     if(P2.getD().equals(i)){
-                         genediseases.add(P2.getG());
-                         
-                     }}
-                 Listofgenes.put(i,genediseases);
-                 }
-                double totalAverage=0.0;
-                
-              for(String cluster:Cluster.keySet()){
-                    double ClusterAverage=0.0;
-                   // System.out.print(cluster+"\n");
-                    Map<String,Set<String>>diseasegenes=new HashMap<String,Set<String>>();
-                    for(String d:Cluster.get(cluster)){
-                       // System.out.print(Cluster.get(cluster)+"\n");
-                        if(Listofgenes.containsKey(d)){
-                             diseasegenes.put(d,Listofgenes.get(d));
-                        }
-                       } 
-                         // System.out.print(diseasegenes);
-                           for(String d2:diseasegenes.keySet()){
-                               double averageD=0.0;
-                               Set<String>diseasegene=new HashSet<String>();
-                               for(String g:Cluster.get(cluster)){
-                                   if(diseasegenes.get(d2).contains(g)){
-                                       diseasegene.add(g);
-                                   }
-                               }
-                              // System.out.print("disease"+d2+"\t"+"diseasegene"+diseasegene+"\n");
-                                     int x=diseasegene.size();
-                                     int y=Listofgenes.get(d2).size();
-                                    averageD=x/y;
-                                   // System.out.print("\n"+averageD+"\n");
-                                    ClusterAverage+=averageD;
-                                    
-                  }
-                                double ClusterAveragee=ClusterAverage/diseasegenes.size();
-                               //System.out.print(cluster+"\t"+ClusterAveragee+"\n");
-                                totalAverage+=ClusterAveragee;
-                                  }
-               // System.out.print("total Average"+"\t"+totalAverage/Cluster.size()+"\n");
-    
-      return (totalAverage/Cluster.size()) ;
+
+
+
+
+
 }
-}
+
 
 
 
